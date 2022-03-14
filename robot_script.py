@@ -97,36 +97,38 @@ class Objeto:
         bpy.ops.object.camera_add(enter_editmode=False, align='VIEW', location=(0, 0, 0), rotation=(0, 0, 0))
         Activo.renombrar(objName)
 
-        
+
+def crearPie():
+    Objeto.crearCubo("Pie1")
+    Seleccionado.escalar((1,1,0.2))
+    
+    Objeto.crearCubo("Joint1")
+    Seleccionado.mover((0,0,0.15))
+    Seleccionado.escalar((0.5,0.2,0.4))
+    
+    seleccionarObjeto2("Pie1","Joint1")
+    bpy.ops.object.join()
+    Activo.renombrar("Pie1")
+    
+    Objeto.crearCilindro("Axis1")
+    Seleccionado.escalar((0.1,0.1,0.7))
+    Seleccionado.mover((0,0,0.2))
+    Activo.rotar((0,3/2*3.14159,0))
+    
+    seleccionarObjeto2("Pie1","Axis1")
+    bpy.ops.object.join()
+    Activo.renombrar("Pie1")
+    
 '''************'''
 ''' M  A  I  N '''
 '''************'''
 if __name__ == "__main__":
-    # Creación de dos cilindros
  
-    
     borrarObjetos()
-    
-    
     
     Objeto.crearCamara("miCamara")
     Seleccionado.mover((6,-4,4))
     Activo.rotar((1.3,0,1))
     bpy.context.object.data.lens = 32
-
     
-    Objeto.crearCubo("cubo1")
-      
-    """
-    Objeto.crearCilindro("MiCilindro1")
-    Cilindro1 = bpy.context.active_object
-    Seleccionado.mover((0, 0.1, 0.2))
-    
-    
-    Objeto.crearCilindro("MiCilindro2")
-    Cilindro2 = bpy.context.active_object
-    Seleccionado.mover((0, -0.3, 0.2))
-    
-    seleccionarObjeto2("MiCilindro1","MiCilindro2")
-    bpy.ops.object.join()
-    """
+    crearPie()
