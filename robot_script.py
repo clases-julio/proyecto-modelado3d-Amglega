@@ -227,7 +227,32 @@ def crearCuerpo(objName):
     
     seleccionarObjeto(objName)
     Seleccionado.mover((0,0,-0.05))
+
+
+def crearBrazo(objName):
     
+    Objeto.crearCilindro(objName)
+    Seleccionado.escalar((0.7,0.7,0.3))
+    Seleccionado.mover((0.58,0,1.85))
+    Activo.rotar((0,3/2*3.14159,0))
+       
+    Objeto.crearCilindro("Codo1")
+    Seleccionado.escalar((0.5,0.5,0.2))
+    Seleccionado.mover((0.58,0,1.3))
+    Activo.rotar((0,3/2*3.14159,0))
+
+    crearEje("Axis1")
+    Seleccionado.mover((0.5,0,1.1))
+    
+    cortarObjeto("Codo1","Axis1") 
+    borrarObjeto("Axis1")
+    
+    Objeto.crearCubo("Hombro1")
+    Seleccionado.escalar((0.2,0.4,0.7))
+    Seleccionado.mover((0.58,0,1.55))
+    
+    juntarObjetos(objName, "Hombro1")
+    juntarObjetos(objName, "Codo1")
     
 '''************'''
 ''' M  A  I  N '''
@@ -288,14 +313,31 @@ if __name__ == "__main__":
     crearCuerpo("Cuerpo1")
     
     crearEje("Axis5")
-    Seleccionado.escalar((1.5,1.5,1.5))
+    Seleccionado.escalar((1,1.5,1.5))
     Seleccionado.mover((0.5,0,1.65))
     
     crearEje("Axis6")
     seleccionarObjeto("Axis6")
-    Seleccionado.escalar((1.5,1.5,1.5))
+    Seleccionado.escalar((1,1.5,1.5))
     Seleccionado.mover((-0.5,0,1.65))
     
     pintarObjeto("Cuerpo1",(0,1,1,1))
     pintarObjeto("Axis5",(0,0,0,1))
     pintarObjeto("Axis6",(0,0,0,1))
+    
+    
+    '''Brazo1'''
+    
+    crearBrazo("Brazo1")
+    cortarObjeto("Brazo1","Axis5")
+    pintarObjeto("Brazo1",(0,0,1,1))
+    
+    
+    '''Brazo2'''
+    
+    crearBrazo("Brazo2")
+    Seleccionado.mover((-1.16,0,0))
+    cortarObjeto("Brazo2","Axis6")
+    pintarObjeto("Brazo2",(0,0,1,1))
+    
+    
