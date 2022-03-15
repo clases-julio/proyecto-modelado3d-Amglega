@@ -33,7 +33,7 @@ def borrarObjetos(): # Borrar todos los objetos
         bpy.ops.object.delete(use_global=False)
         
 def cortarObjeto(objetoPrincipal,objetoMascara):
-    seleccionarObjeto(objetoPrincipal)
+    activarObjeto(objetoPrincipal)
     bpy.ops.object.modifier_add(type='BOOLEAN')
     bpy.context.object.modifiers["Boolean"].operation = 'DIFFERENCE'
     bpy.context.object.modifiers["Boolean"].object = bpy.data.objects[objetoMascara]
@@ -194,6 +194,41 @@ def crearMuslo(objName):
     juntarObjetos(objName, "Joint2")
     juntarObjetos(objName, "Ball1")
     
+def crearCuerpo(objName):
+    
+    Objeto.crearCubo(objName)
+    Seleccionado.escalar((2,0.7,2))
+    Seleccionado.mover((0,0,1.7))
+    
+    Objeto.crearCubo("Hole1")
+    Seleccionado.escalar((0.3,0.2,0.4))
+    Seleccionado.mover((-0.35,0,1.25))
+    
+    Objeto.crearCubo("Hole2")
+    Seleccionado.escalar((0.3,0.2,0.4))
+    Seleccionado.mover((0.35,0,1.25))
+    
+    crearEje("Axis1")
+    Seleccionado.escalar((1.5,1.5,1.5))
+    Seleccionado.mover((0.5,0,1.7))
+    
+    crearEje("Axis2")
+    Seleccionado.escalar((1.5,1.5,1.5))
+    Seleccionado.mover((-0.5,0,1.7))
+    
+    cortarObjeto(objName,"Hole1") 
+    borrarObjeto("Hole1")
+    cortarObjeto(objName,"Hole2") 
+    borrarObjeto("Hole2")
+    cortarObjeto(objName,"Axis1") 
+    borrarObjeto("Axis1")
+    cortarObjeto(objName,"Axis2") 
+    borrarObjeto("Axis2")
+    
+    seleccionarObjeto(objName)
+    Seleccionado.mover((0,0,-0.05))
+    
+    
 '''************'''
 ''' M  A  I  N '''
 '''************'''
@@ -247,3 +282,20 @@ if __name__ == "__main__":
     pintarObjeto("Axis3",(0,0,0,1))
     pintarObjeto("Axis4",(0,0,0,1))
     
+    
+    '''Cuerpo'''
+    
+    crearCuerpo("Cuerpo1")
+    
+    crearEje("Axis5")
+    Seleccionado.escalar((1.5,1.5,1.5))
+    Seleccionado.mover((0.5,0,1.65))
+    
+    crearEje("Axis6")
+    seleccionarObjeto("Axis6")
+    Seleccionado.escalar((1.5,1.5,1.5))
+    Seleccionado.mover((-0.5,0,1.65))
+    
+    pintarObjeto("Cuerpo1",(0,1,1,1))
+    pintarObjeto("Axis5",(0,0,0,1))
+    pintarObjeto("Axis6",(0,0,0,1))
