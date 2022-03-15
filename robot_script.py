@@ -21,7 +21,7 @@ def juntarObjetos(nombreObjeto1,nombreObjeto2): # Seleccionar 2 objetos por su n
     Activo.renombrar(nombreObjeto1)
 
 def activarObjeto(nombreObjeto): # Activar un objeto por su nombre
-    bpy.context.scene.objects.active = bpy.data.objects[nombreObjeto]
+    bpy.context.view_layer.objects.active = bpy.data.objects[nombreObjeto]
 
 def borrarObjeto(nombreObjeto): # Borrar un objeto por su nombre
     seleccionarObjeto(nombreObjeto)
@@ -40,9 +40,10 @@ def cortarObjeto(objetoPrincipal,objetoMascara):
     bpy.ops.object.modifier_apply(apply_as='DATA', modifier="Boolean")
     
 def pintarObjeto(nombreObjeto,color):
-    seleccionarObjeto(nombreObjeto)
-    bpy.ops.material.new()
-    bpy.data.materials[bpy.context.object.active_material.name].node_tree.nodes["Principled BSDF"].inputs[0].default_value = color
+        activarObjeto(nombreObjeto)
+        material = bpy.data.materials.new("Mat")
+        bpy.context.active_object.data.materials.append(material)
+        bpy.context.object.active_material.diffuse_color = color
 
 '''****************************************************************'''
 '''Clase para realizar transformaciones sobre objetos seleccionados'''
@@ -210,6 +211,7 @@ if __name__ == "__main__":
 
     '''Pierna1'''
     crearPie("Foot1")
+
     crearPierna("Leg1")
     cortarObjeto("Leg1","Foot1")
     crearMuslo("Thigh1")
@@ -219,6 +221,12 @@ if __name__ == "__main__":
     
     seleccionarObjetos(("Foot1","Leg1","Thigh1","Axis1","Axis2"))
     Seleccionado.mover((0.35,0,0))
+    
+    pintarObjeto("Foot1",(0,0,1,1))
+    pintarObjeto("Leg1",(0,1,1,1))
+    pintarObjeto("Thigh1",(0,0,1,1))
+    pintarObjeto("Axis1",(0,0,0,1))
+    pintarObjeto("Axis2",(0,0,0,1))
     
     '''Pierna2'''
     
@@ -232,4 +240,10 @@ if __name__ == "__main__":
     
     seleccionarObjetos(("Foot2","Leg2","Thigh2","Axis3","Axis4"))
     Seleccionado.mover((-0.35,0,0))
+    
+    pintarObjeto("Foot2",(0,0,1,1))
+    pintarObjeto("Leg2",(0,1,1,1))
+    pintarObjeto("Thigh2",(0,0,1,1))
+    pintarObjeto("Axis3",(0,0,0,1))
+    pintarObjeto("Axis4",(0,0,0,1))
     
