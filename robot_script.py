@@ -7,13 +7,21 @@ def seleccionarObjeto(nombreObjeto): # Seleccionar un objeto por su nombre
     bpy.ops.object.select_all(action='DESELECT') # deseleccionamos todos...
     bpy.data.objects[nombreObjeto].select_set(True) # ...excepto el buscado
 
-def seleccionarObjeto2(nombreObjeto1,nombreObjeto2): # Seleccionar 2 objetos por su nombre
+
+def seleccionarObjetos(Objetos):
+    bpy.ops.object.select_all(action='DESELECT') # deseleccionamos todos...
+    for object in Objetos: #for para seleccionar todo los que queremos
+        bpy.data.objects[object].select_set(True)
+
+def juntarObjetos(nombreObjeto1,nombreObjeto2): # Seleccionar 2 objetos por su nombre
     bpy.ops.object.select_all(action='DESELECT') # deseleccionamos todos...
     bpy.data.objects[nombreObjeto1].select_set(True) #seleccionamos los dos que queremos
     bpy.data.objects[nombreObjeto2].select_set(True)
+    bpy.ops.object.join()
+    Activo.renombrar(nombreObjeto1)
 
 def activarObjeto(nombreObjeto): # Activar un objeto por su nombre
-    bpy.context.scene.objects.active = bpy.data.objects[nombreObjeto]
+    bpy.context.view_layer.objects.active = bpy.data.objects[nombreObjeto]
 
 def borrarObjeto(nombreObjeto): # Borrar un objeto por su nombre
     seleccionarObjeto(nombreObjeto)
@@ -23,6 +31,19 @@ def borrarObjetos(): # Borrar todos los objetos
     if(len(bpy.data.objects) != 0):
         bpy.ops.object.select_all(action='SELECT')
         bpy.ops.object.delete(use_global=False)
+        
+def cortarObjeto(objetoPrincipal,objetoMascara):
+    seleccionarObjeto(objetoPrincipal)
+    bpy.ops.object.modifier_add(type='BOOLEAN')
+    bpy.context.object.modifiers["Boolean"].operation = 'DIFFERENCE'
+    bpy.context.object.modifiers["Boolean"].object = bpy.data.objects[objetoMascara]
+    bpy.ops.object.modifier_apply(apply_as='DATA', modifier="Boolean")
+    
+def pintarObjeto(nombreObjeto,color):
+        activarObjeto(nombreObjeto)
+        material = bpy.data.materials.new("Mat")
+        bpy.context.active_object.data.materials.append(material)
+        bpy.context.object.active_material.diffuse_color = color
 
 '''****************************************************************'''
 '''Clase para realizar transformaciones sobre objetos seleccionados'''
@@ -97,36 +118,132 @@ class Objeto:
         bpy.ops.object.camera_add(enter_editmode=False, align='VIEW', location=(0, 0, 0), rotation=(0, 0, 0))
         Activo.renombrar(objName)
 
-        
+
+def crearEje(objName):
+    Objeto.crearCilindro(objName)
+    Seleccionado.escalar((0.1,0.1,0.7))
+    Seleccionado.mover((0,0,0.2))
+    Seleccionado.rotarY(3/2*3.14159)
+
+def crearPie(objName):
+    
+    Objeto.crearCubo(objName)
+    Seleccionado.escalar((1,1,0.2))
+    crearEje("Axis1")
+    
+    Objeto.crearCubo("Joint1")
+    Seleccionado.mover((0,0,0.15))
+    Seleccionado.escalar((0.5,0.2,0.4))
+
+    juntarObjetos(objName, "Joint1")
+    
+    Objeto.crearCubo("corte")
+    Seleccionado.escalar((1,1,1))
+    
+    Objeto.crearCilindro("Top")
+    Seleccionado.escalar((0.3,0.27,0.5))
+    Seleccionado.mover((0,0,0.2))
+    Activo.rotar((0,3/2*3.14159,0))
+    
+    cortarObjeto("Top","corte")
+    borrarObjeto("corte")
+    juntarObjetos(objName, "Top")
+    
+    cortarObjeto(objName,"Axis1")
+    borrarObjeto("Axis1")
+
+def crearPierna(objName):
+    
+    crearEje("Axis1")
+    crearEje("Axis2")
+    Seleccionado.mover((0,0,0.4))
+    Objeto.crearCubo(objName)
+    Seleccionado.escalar((0.6,0.5,1))
+    Seleccionado.mover((0,0,0.4))
+    
+    cortarObjeto(objName,"Axis1")
+    borrarObjeto("Axis1")
+    
+    cortarObjeto(objName,"Axis2") 
+    borrarObjeto("Axis2")
+    
+def crearMuslo(objName):
+    
+    crearEje("Axis2")
+    Seleccionado.mover((0,0,0.4))
+    
+    Objeto.crearCubo("Hole1")
+    Seleccionado.escalar((0.6,0.6,1.2))
+    Seleccionado.mover((0,0,0.4))
+    Objeto.crearCubo("Joint2")
+    Seleccionado.escalar((0.1,0.1,1))
+    Seleccionado.mover((0,0,1))
+    Objeto.crearEsfera("Ball1")
+    Seleccionado.escalar((0.1,0.1,0.1))
+    Seleccionado.mover((0,0,1.25))
+    
+    Objeto.crearCubo(objName)
+    Seleccionado.escalar((0.65,0.7,1))
+    Seleccionado.mover((0,0,0.8))
+    
+    cortarObjeto(objName,"Axis2") 
+    borrarObjeto("Axis2")
+    cortarObjeto(objName,"Hole1") 
+    borrarObjeto("Hole1")
+    
+    juntarObjetos(objName, "Joint2")
+    juntarObjetos(objName, "Ball1")
+    
 '''************'''
 ''' M  A  I  N '''
 '''************'''
 if __name__ == "__main__":
-    # Creación de dos cilindros
  
-    
     borrarObjetos()
-    
-    
     
     Objeto.crearCamara("miCamara")
     Seleccionado.mover((6,-4,4))
     Activo.rotar((1.3,0,1))
     bpy.context.object.data.lens = 32
+    
+    bpy.ops.object.light_add(type='SUN', radius=1, location=(1, -1, 2))
+    bpy.context.object.data.energy = 70
 
+    '''Pierna1'''
+    crearPie("Foot1")
+
+    crearPierna("Leg1")
+    cortarObjeto("Leg1","Foot1")
+    crearMuslo("Thigh1")
+    crearEje("Axis1")
+    crearEje("Axis2")
+    Seleccionado.mover((0,0,0.4))
     
-    Objeto.crearCubo("cubo1")
-      
-    """
-    Objeto.crearCilindro("MiCilindro1")
-    Cilindro1 = bpy.context.active_object
-    Seleccionado.mover((0, 0.1, 0.2))
+    seleccionarObjetos(("Foot1","Leg1","Thigh1","Axis1","Axis2"))
+    Seleccionado.mover((0.35,0,0))
     
+    pintarObjeto("Foot1",(0,0,1,1))
+    pintarObjeto("Leg1",(0,1,1,1))
+    pintarObjeto("Thigh1",(0,0,1,1))
+    pintarObjeto("Axis1",(0,0,0,1))
+    pintarObjeto("Axis2",(0,0,0,1))
     
-    Objeto.crearCilindro("MiCilindro2")
-    Cilindro2 = bpy.context.active_object
-    Seleccionado.mover((0, -0.3, 0.2))
+    '''Pierna2'''
     
-    seleccionarObjeto2("MiCilindro1","MiCilindro2")
-    bpy.ops.object.join()
-    """
+    crearPie("Foot2")
+    crearPierna("Leg2")
+    cortarObjeto("Leg2","Foot2")
+    crearMuslo("Thigh2")
+    crearEje("Axis3")
+    crearEje("Axis4")
+    Seleccionado.mover((0,0,0.4))
+    
+    seleccionarObjetos(("Foot2","Leg2","Thigh2","Axis3","Axis4"))
+    Seleccionado.mover((-0.35,0,0))
+    
+    pintarObjeto("Foot2",(0,0,1,1))
+    pintarObjeto("Leg2",(0,1,1,1))
+    pintarObjeto("Thigh2",(0,0,1,1))
+    pintarObjeto("Axis3",(0,0,0,1))
+    pintarObjeto("Axis4",(0,0,0,1))
+    
