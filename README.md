@@ -24,3 +24,18 @@ The next one is the body.
 
 Similarly to the legs the main rigid part is painted in blue and the mobile ones in black. 
 This part was easier than the last one not only because most of the used functions were already made but also because it is only made of one piece.
+
+## Arms and head
+
+Using the functions created for the legs the arms and head were not a big challenge. Like the legs they also have parts made for structural purposes, the blue ones, and the axes to join them and make possible the movement.
+
+<p align="center">
+<img src="./finished.png" width="50%" height="50%">
+</p align>
+
+
+## Evolution
+
+In the next gif you can see the progress of designing the robot and also an extra image of each separate piece.
+
+![robot_progress](./robot_progress.gif)
