@@ -38,4 +38,4 @@ Using the functions created for the legs the arms and head were not a big challe
 
 In the next gif you can see the progress of designing the robot and also an extra image of each separate piece.
 
-![robot_progress](./robot_progress)
+![robot_progress](./robot_progress.gif)
