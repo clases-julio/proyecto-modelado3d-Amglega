@@ -237,7 +237,7 @@ def crearBrazo(objName):
     Activo.rotar((0,3/2*3.14159,0))
        
     Objeto.crearCilindro("Codo1")
-    Seleccionado.escalar((0.5,0.5,0.2))
+    Seleccionado.escalar((0.5,0.5,0.15))
     Seleccionado.mover((0.58,0,1.3))
     Activo.rotar((0,3/2*3.14159,0))
 
@@ -253,6 +253,84 @@ def crearBrazo(objName):
     
     juntarObjetos(objName, "Hombro1")
     juntarObjetos(objName, "Codo1")
+    
+def crearAntebrazo(objName):
+     
+    Objeto.crearCilindro(objName)
+    Seleccionado.escalar((0.55,0.55,0.25))
+    Seleccionado.mover((0.58,0,1.3))
+    Activo.rotar((0,3/2*3.14159,0))
+    crearEje("Axis7")
+    Seleccionado.mover((0.5,0,1.1))
+    cortarObjeto(objName,"Axis7") 
+    borrarObjeto("Axis7")
+    
+    Objeto.crearCubo("corteBrazo1")
+    Seleccionado.escalar((0.22,0.9,0.9))
+    Seleccionado.mover((0.58,0,1.55))
+    
+    Objeto.crearCubo("corteBrazo2")
+    Seleccionado.escalar((0.9,0.9,0.75))
+    Seleccionado.mover((0.58,0,1.55))
+    
+    
+    Objeto.crearCilindro("Codo1")
+    Seleccionado.escalar((0.51,0.51,0.16))
+    Seleccionado.mover((0.58,0,1.3))
+    Activo.rotar((0,3/2*3.14159,0))
+    
+    cortarObjeto(objName,"Codo1")
+   
+    cortarObjeto(objName,"corteBrazo1")
+    borrarObjeto("corteBrazo1")
+    cortarObjeto(objName,"corteBrazo2")
+    borrarObjeto("corteBrazo2")
+    
+    Objeto.crearCubo("antebrazo")
+    Seleccionado.escalar((0.2,0.27,0.6))
+    Seleccionado.mover((0.58,0,1.09))
+    cortarObjeto("antebrazo","Codo1")
+    borrarObjeto("Codo1")
+    juntarObjetos(objName, "antebrazo")
+    
+    Objeto.crearCilindro("hueco")
+    Seleccionado.escalar((0.27,0.17,0.5))
+    Seleccionado.mover((0.58,0,0.85))
+    Seleccionado.rotarY(3/2*3.14159)
+    Objeto.crearCubo("mano")
+    Seleccionado.escalar((0.2,0.2,0.2))
+    Seleccionado.mover((0.58,0,0.91))
+    Seleccionado.rotarX(3.9)
+    cortarObjeto("mano","hueco")
+    borrarObjeto("hueco")
+    seleccionarObjeto("mano")
+    Seleccionado.escalar((1,1,2))
+    Seleccionado.mover((0,0,-0.03))
+    juntarObjetos(objName, "mano")
+    
+def cabezaMono(objName):
+    
+    bpy.ops.mesh.primitive_monkey_add(size=2, enter_editmode=False, location=(0, 0, 0))
+    Activo.renombrar(objName)
+    Seleccionado.escalar((0.5,0.5,0.5))
+    Seleccionado.mover((0,0,2.3))
+    
+def cabezaRobot(objName):
+    
+    Objeto.crearCubo(objName)
+    Seleccionado.mover((0,0,2.4))
+    
+    
+    Objeto.crearCubo("antena")
+    Seleccionado.escalar((0.2,0.2,0.5))
+    Seleccionado.mover((0,0,2.7))
+    
+    Objeto.crearEsfera("ball")
+    Seleccionado.escalar((0.2,0.2,0.2))
+    Seleccionado.mover((0,0,2.8))
+    juntarObjetos("antena", "ball")s
+    juntarObjetos(objName, "antena")
+    
     
 '''************'''
 ''' M  A  I  N '''
@@ -330,14 +408,43 @@ if __name__ == "__main__":
     
     crearBrazo("Brazo1")
     cortarObjeto("Brazo1","Axis5")
+    crearAntebrazo("Antebrazo1")
+    crearEje("Axis7")
+    Seleccionado.escalar((0.5,1,1))
+    Seleccionado.mover((0.59,0,1.1))
     pintarObjeto("Brazo1",(0,0,1,1))
-    
+    pintarObjeto("Antebrazo1",(0,1,1,1))
+    pintarObjeto("Axis7",(0,0,0,1))
     
     '''Brazo2'''
     
     crearBrazo("Brazo2")
+    cortarObjeto("Brazo2","Axis5")
+    crearAntebrazo("Antebrazo2")
+    crearEje("Axis8")
+    Seleccionado.escalar((0.5,1,1))
+    Seleccionado.mover((0.59,0,1.1))
+    
+    seleccionarObjetos(("Brazo2","Antebrazo2","Axis8"))
     Seleccionado.mover((-1.16,0,0))
-    cortarObjeto("Brazo2","Axis6")
+    
+    
     pintarObjeto("Brazo2",(0,0,1,1))
+    pintarObjeto("Antebrazo2",(0,1,1,1))
+    pintarObjeto("Axis8",(0,0,0,1))
     
+    '''Cabeza'''
     
+    #cabezaMono("Cabeza1")
+    cabezaRobot("Cabeza1")
+    
+    pintarObjeto("Cabeza1",(0,0,1,1))
+    
+    crearEje("Axis9")
+    Seleccionado.mover((0,0,2))
+    Seleccionado.rotarY(3/2*3.14159)
+    
+    cortarObjeto("Cuerpo1","Axis9")
+    cortarObjeto("Cabeza1","Axis9")
+    
+    pintarObjeto("Axis9",(0,0,0,1))
