@@ -328,7 +328,7 @@ def cabezaRobot(objName):
     Objeto.crearEsfera("ball")
     Seleccionado.escalar((0.2,0.2,0.2))
     Seleccionado.mover((0,0,2.8))
-    juntarObjetos("antena", "ball")s
+    juntarObjetos("antena", "ball")
     juntarObjetos(objName, "antena")
     
     
